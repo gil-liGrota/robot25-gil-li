@@ -8,7 +8,25 @@ public interface transferIO {
     public static class transferIOInputs {
         public double velocity;
         public double voltage;
-        public double current;
         public boolean transferSensorInput;
+    }
+
+    public default void updateInputs(transferIOInputs inputs) {
+    }
+
+    public default void setVoltage(double voltage) {
+
+    }
+
+    public default void setVelocity(double velocity) {
+
+    }
+
+    public default void stopMotor() {
+
+    }
+
+    public default boolean isCoralIn() {
+        return false;
     }
 }
