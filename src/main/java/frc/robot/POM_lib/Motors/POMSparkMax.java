@@ -1,6 +1,7 @@
 package frc.robot.POM_lib.Motors;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class POMSparkMax extends SparkMax implements POMMotor {
   public POMSparkMax(int id) {
@@ -25,5 +26,11 @@ public class POMSparkMax extends SparkMax implements POMMotor {
   @Override
   public void setBrake(boolean isBrake) {
     setBrake(isBrake);
+  }
+
+  public void configure(SparkMaxConfig config, ResetMode knoresetsafeparameters,
+      PersistMode kpersistparameters) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'configure'");
   }
 }
