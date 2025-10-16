@@ -13,6 +13,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.POM_lib.Motors.POMSparkMax;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
 
@@ -46,7 +48,7 @@ public class elevatorIOReal implements elevatorIO {
                 .velocityConversionFactor(POSITION_CONVERSION_FACTOR / 60.0);
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        encoder.setPosition(0);
+        resetEncoder();
 
     }
 
@@ -60,6 +62,10 @@ public class elevatorIOReal implements elevatorIO {
         inputs.brakeSwitch = brakeSwitch.get();
 
         resetIfPressed();
+    }
+
+    private void resetEncoder() {
+        encoder.setPosition(0.0);
     }
 
     @Override
@@ -117,18 +123,42 @@ public class elevatorIOReal implements elevatorIO {
         return encoder.getPosition();
     }
 
-    private void resetEncoder() {
-        encoder.setPosition(0.0);
-    }
-
     @Override
-    public void resetPID() {// TODO
-
+    public void resetPID() {
+        pidController.reset(encoder.getPosition(), encoder.getVelocity());
     }
 
     @Override
     public void resetPID(double newGoal) {
+        if (newGoal - encoder.getPosition() > 0) {
+            pidController.reset(encoder.getPosition(), Math.max(encoder.getVelocity(), feedforward.calculate(1)));
+        } else {
+            pidController.reset(encoder.getPosition(), Math.min(encoder.getVelocity(), feedforward.calculate(1)));
+        }
+    }
 
+    // @Override
+    public void initSendable(SendableBuilder builder) {// TODO check if work
+        builder.setSmartDashboardType("Coral Arm");
+        builder.addDoubleProperty("P", pidController::getP, pidController::setP);
+        builder.addDoubleProperty("I", pidController::getI, pidController::setI);
+        builder.addDoubleProperty("D", pidController::getD, pidController::setD);
+        builder.addDoubleArrayProperty("Max Velocity, Max Acceleration", () -> {
+            Constraints constraints = pidController.getConstraints();
+            return new double[] { constraints.maxVelocity, constraints.maxAcceleration };
+        },
+                (constraints) -> pidController.setConstraints(new Constraints(constraints[0],
+                        constraints[1])));
+
+        builder.addDoubleArrayProperty("FeedForward", () -> {
+            return new double[] { feedforward.getKg(), feedforward.getKs(),
+                    feedforward.getKv() };
+        },
+                (feedForwardArray) -> {
+                    feedforward.setKg(feedForwardArray[0]);
+                    feedforward.setKs(feedForwardArray[1]);
+                    feedforward.setKv(feedForwardArray[2]);
+                });
     }
 
 }
