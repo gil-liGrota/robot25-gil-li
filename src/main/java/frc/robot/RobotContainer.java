@@ -30,6 +30,10 @@ import frc.robot.POM_lib.sensors.POMDigitalInput;
 import frc.robot.subsystems.arm.arm;
 import frc.robot.subsystems.arm.armIOReal;
 import frc.robot.commands.armcommands;
+import frc.robot.POM_lib.sensors.POMDigitalInput;
+import frc.robot.commands.elevatorCommands;
+import frc.robot.subsystems.elevator.elevator;
+import frc.robot.subsystems.elevator.elevatorIOReal;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -54,6 +58,7 @@ public class RobotContainer {
         private POMDigitalInput brakeSwitch = new POMDigitalInput(4);
 
         private leds leds;
+        private elevator elevator;
 
         // Dashboard inputs
         private final LoggedDashboardChooser<Command> autoChooser;
@@ -69,6 +74,7 @@ public class RobotContainer {
                                 // Real robot, instantiate hardware IO implementations
                                 leds = new leds(new ledsIOReal());
                                 arm = new arm(new armIOReal(brakeSwitch));
+                                elevator = new elevator(new elevatorIOReal(brakeSwitch));
                                 break;
 
                         case SIM:
@@ -99,6 +105,13 @@ public class RobotContainer {
          * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
          */
         private void configureButtonBindings() {
+
+                driverController.leftTrigger().whileTrue(elevatorCommands.closeElevatorManual(elevator));
+                driverController.rightTrigger().whileTrue(elevatorCommands.openElevatorManual(elevator));
+                driverController.b().onTrue(elevatorCommands.goToPosition(elevator, 10));
+                driverController.x().onTrue(elevatorCommands.goToPosition(elevator, 20));
+                driverController.y().onTrue(elevatorCommands.goToPosition(elevator, 30));
+                driverController.a().onTrue(elevatorCommands.closeElevator(elevator));
 
         }
 
