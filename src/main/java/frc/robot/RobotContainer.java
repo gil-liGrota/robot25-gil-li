@@ -22,6 +22,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
+import frc.robot.POM_lib.sensors.POMDigitalInput;
+import frc.robot.subsystems.arm.arm;
+import frc.robot.subsystems.arm.armIOReal;
+import frc.robot.commands.armcommands;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -42,6 +46,8 @@ public class RobotContainer {
 
         // Controller
         private final PomXboxController driverController = new PomXboxController(0);
+        private arm arm;
+        private POMDigitalInput brakeSwitch = new POMDigitalInput(4);
 
         // Dashboard inputs
         private final LoggedDashboardChooser<Command> autoChooser;
@@ -55,6 +61,7 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
+                                arm = new arm(new armIOReal(brakeSwitch));
                                 break;
 
                         case SIM:
@@ -85,6 +92,9 @@ public class RobotContainer {
          * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
          */
         private void configureButtonBindings() {
+                driverController.y().onTrue(armcommands.goToPosition(arm, Math.PI / 2));
+                driverController.x().onTrue(armcommands.goToPosition(arm, 0));
+                driverController.a().onTrue(armcommands.closeArm(arm));
 
         }
 
