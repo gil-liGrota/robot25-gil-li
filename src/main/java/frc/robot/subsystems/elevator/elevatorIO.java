@@ -12,7 +12,7 @@ public interface elevatorIO {
         double elevatorPosition = 0.0;
         double elevatorAppliedVolts = 0.0;
         boolean foldSwitch = false;
-        boolean brakeSwitch = false;
+        // boolean brakeSwitch = false;
     }
 
     public default void updateInputs(ElevatorIOInputs inputs) {
@@ -35,6 +35,9 @@ public interface elevatorIO {
     }
 
     public default void resetIfPressed() {
+    }
+
+    public default void resistGravity() {
     }
 
     public default boolean isPressed() {

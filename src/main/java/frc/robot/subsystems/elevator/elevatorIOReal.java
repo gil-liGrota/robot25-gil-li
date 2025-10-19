@@ -24,20 +24,19 @@ public class elevatorIOReal implements elevatorIO {
     private ProfiledPIDController pidController;
     private ElevatorFeedforward feedforward;
     private POMDigitalInput foldSwitch;
-    private POMDigitalInput brakeSwitch;
-    private BooleanSupplier isCoralIn;
+    // private POMDigitalInput brakeSwitch;
 
-    public elevatorIOReal(POMDigitalInput brakeSwitch) {
+    public elevatorIOReal() {
         motor = new POMSparkMax(ELEVATOR_ID);
         encoder = motor.getEncoder();
         foldSwitch = new POMDigitalInput(FOLD_SWITCH);
-        this.brakeSwitch = brakeSwitch;
-        pidController.setTolerance(TOLERANCE);
+        // this.brakeSwitch = brakeSwitch;
 
         feedforward = new ElevatorFeedforward(KS, KG, KV);
         pidController = new ProfiledPIDController(KP, KI, KD,
                 new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
 
+        pidController.setTolerance(TOLERANCE);
         SparkMaxConfig config = new SparkMaxConfig();
 
         config.idleMode(IdleMode.kCoast).inverted(INVERTED)
@@ -59,7 +58,7 @@ public class elevatorIOReal implements elevatorIO {
         inputs.elevatorPosition = encoder.getPosition();
         inputs.elevatorAppliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.foldSwitch = foldSwitch.get();
-        inputs.brakeSwitch = brakeSwitch.get();
+        // inputs.brakeSwitch = brakeSwitch.get();
 
         resetIfPressed();
     }
@@ -101,16 +100,16 @@ public class elevatorIOReal implements elevatorIO {
         if (foldSwitch.get()) {
             encoder.setPosition(0.0);
         }
-        if (brakeSwitch.get()) {
-            motor.configure(new SparkMaxConfig().idleMode(IdleMode.kCoast),
-                    ResetMode.kNoResetSafeParameters,
-                    PersistMode.kNoPersistParameters);
-            resetEncoder();
-        } else {
-            motor.configure(new SparkMaxConfig().idleMode(IdleMode.kBrake),
-                    ResetMode.kNoResetSafeParameters,
-                    PersistMode.kNoPersistParameters);
-        }
+        // if (brakeSwitch.get()) {
+        // motor.configure(new SparkMaxConfig().idleMode(IdleMode.kCoast),
+        // ResetMode.kNoResetSafeParameters,
+        // PersistMode.kNoPersistParameters);
+        // resetEncoder();
+        // } else {
+        // motor.configure(new SparkMaxConfig().idleMode(IdleMode.kBrake),
+        // ResetMode.kNoResetSafeParameters,
+        // PersistMode.kNoPersistParameters);
+        // }
     }
 
     @Override
@@ -135,6 +134,11 @@ public class elevatorIOReal implements elevatorIO {
         } else {
             pidController.reset(encoder.getPosition(), Math.min(encoder.getVelocity(), feedforward.calculate(1)));
         }
+    }
+
+    @Override
+    public void resistGravity() {
+        setVoltage(feedforward.calculate(0));
     }
 
     // @Override
