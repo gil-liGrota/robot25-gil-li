@@ -13,15 +13,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.commands.ledsCommands;
 import frc.robot.subsystems.leds.leds;
@@ -34,10 +30,11 @@ import frc.robot.POM_lib.sensors.POMDigitalInput;
 import frc.robot.commands.elevatorCommands;
 import frc.robot.subsystems.elevator.elevator;
 import frc.robot.subsystems.elevator.elevatorIOReal;
+import frc.robot.commands.transferCommands;
+import frc.robot.subsystems.transfer.transfer;
+import frc.robot.subsystems.transfer.transferIOreal;
 
-import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -59,6 +56,7 @@ public class RobotContainer {
 
         private leds leds;
         private elevator elevator;
+        private transfer transfer;
 
         // Dashboard inputs
         private final LoggedDashboardChooser<Command> autoChooser;
@@ -75,6 +73,7 @@ public class RobotContainer {
                                 leds = new leds(new ledsIOReal());
                                 arm = new arm(new armIOReal(brakeSwitch));
                                 elevator = new elevator(new elevatorIOReal(brakeSwitch));
+                                transfer = new transfer(new transferIOreal());
                                 break;
 
                         case SIM:
@@ -105,13 +104,6 @@ public class RobotContainer {
          * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
          */
         private void configureButtonBindings() {
-
-                driverController.leftTrigger().whileTrue(elevatorCommands.closeElevatorManual(elevator));
-                driverController.rightTrigger().whileTrue(elevatorCommands.openElevatorManual(elevator));
-                driverController.b().onTrue(elevatorCommands.goToPosition(elevator, 10));
-                driverController.x().onTrue(elevatorCommands.goToPosition(elevator, 20));
-                driverController.y().onTrue(elevatorCommands.goToPosition(elevator, 30));
-                driverController.a().onTrue(elevatorCommands.closeElevator(elevator));
 
         }
 
