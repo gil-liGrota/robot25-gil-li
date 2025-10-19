@@ -92,8 +92,6 @@ public class RobotContainer {
          * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
          */
         private void configureButtonBindings() {
-                driverController.a().whileTrue(ledsCommands.rainbow(leds));
-                driverController.b().onTrue(ledsCommands.setAll(leds, Color.kBlack));
         }
 
         // public void displaSimFieldToAdvantageScope() {
