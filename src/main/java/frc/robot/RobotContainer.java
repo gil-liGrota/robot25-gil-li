@@ -61,7 +61,7 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
-                                elevator = new elevator(new elevatorIOReal());
+                                elevator = new elevator(new elevatorIOReal(brakeSwitch));
                                 break;
 
                         case SIM:

@@ -24,13 +24,13 @@ public class elevatorIOReal implements elevatorIO {
     private ProfiledPIDController pidController;
     private ElevatorFeedforward feedforward;
     private POMDigitalInput foldSwitch;
-    // private POMDigitalInput brakeSwitch;
+    private POMDigitalInput brakeSwitch;
 
-    public elevatorIOReal() {
+    public elevatorIOReal(POMDigitalInput brakeSwitch) {
         motor = new POMSparkMax(ELEVATOR_ID);
         encoder = motor.getEncoder();
         foldSwitch = new POMDigitalInput(FOLD_SWITCH);
-        // this.brakeSwitch = brakeSwitch;
+        this.brakeSwitch = brakeSwitch;
 
         feedforward = new ElevatorFeedforward(KS, KG, KV);
         pidController = new ProfiledPIDController(KP, KI, KD,
@@ -58,7 +58,7 @@ public class elevatorIOReal implements elevatorIO {
         inputs.elevatorPosition = encoder.getPosition();
         inputs.elevatorAppliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.foldSwitch = foldSwitch.get();
-        // inputs.brakeSwitch = brakeSwitch.get();
+        inputs.brakeSwitch = brakeSwitch.get();
 
         resetIfPressed();
     }
@@ -100,16 +100,16 @@ public class elevatorIOReal implements elevatorIO {
         if (foldSwitch.get()) {
             encoder.setPosition(0.0);
         }
-        // if (brakeSwitch.get()) {
-        // motor.configure(new SparkMaxConfig().idleMode(IdleMode.kCoast),
-        // ResetMode.kNoResetSafeParameters,
-        // PersistMode.kNoPersistParameters);
-        // resetEncoder();
-        // } else {
-        // motor.configure(new SparkMaxConfig().idleMode(IdleMode.kBrake),
-        // ResetMode.kNoResetSafeParameters,
-        // PersistMode.kNoPersistParameters);
-        // }
+        if (brakeSwitch.get()) {
+            motor.configure(new SparkMaxConfig().idleMode(IdleMode.kCoast),
+                    ResetMode.kNoResetSafeParameters,
+                    PersistMode.kNoPersistParameters);
+            resetEncoder();
+        } else {
+            motor.configure(new SparkMaxConfig().idleMode(IdleMode.kBrake),
+                    ResetMode.kNoResetSafeParameters,
+                    PersistMode.kNoPersistParameters);
+        }
     }
 
     @Override
@@ -139,30 +139,6 @@ public class elevatorIOReal implements elevatorIO {
     @Override
     public void resistGravity() {
         setVoltage(feedforward.calculate(0));
-    }
-
-    // @Override
-    public void initSendable(SendableBuilder builder) {// TODO check if work
-        builder.setSmartDashboardType("Coral Arm");
-        builder.addDoubleProperty("P", pidController::getP, pidController::setP);
-        builder.addDoubleProperty("I", pidController::getI, pidController::setI);
-        builder.addDoubleProperty("D", pidController::getD, pidController::setD);
-        builder.addDoubleArrayProperty("Max Velocity, Max Acceleration", () -> {
-            Constraints constraints = pidController.getConstraints();
-            return new double[] { constraints.maxVelocity, constraints.maxAcceleration };
-        },
-                (constraints) -> pidController.setConstraints(new Constraints(constraints[0],
-                        constraints[1])));
-
-        builder.addDoubleArrayProperty("FeedForward", () -> {
-            return new double[] { feedforward.getKg(), feedforward.getKs(),
-                    feedforward.getKv() };
-        },
-                (feedForwardArray) -> {
-                    feedforward.setKg(feedForwardArray[0]);
-                    feedforward.setKs(feedForwardArray[1]);
-                    feedforward.setKv(feedForwardArray[2]);
-                });
     }
 
 }
