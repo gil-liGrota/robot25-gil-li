@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
+import frc.robot.commands.transferCommands;
+import frc.robot.subsystems.transfer.transfer;
+import frc.robot.subsystems.transfer.transferIOreal;
 
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -36,6 +39,7 @@ public class RobotContainer {
 
         // Controller
         private final PomXboxController driverController = new PomXboxController(0);
+        private transfer transfer;
 
         // Dashboard inputs
         private final LoggedDashboardChooser<Command> autoChooser;
@@ -49,6 +53,7 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
+                                transfer = new transfer(new transferIOreal());
                                 break;
 
                         case SIM:
@@ -79,6 +84,8 @@ public class RobotContainer {
          * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
          */
         private void configureButtonBindings() {
+                driverController.a().whileTrue(transferCommands.setVoltage(transfer, 6));
+                driverController.x().onTrue(transferCommands.autoIntake(transfer));
 
         }
 

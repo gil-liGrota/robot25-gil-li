@@ -28,9 +28,10 @@ public class POMSparkMax extends SparkMax implements POMMotor {
     setBrake(isBrake);
   }
 
-  public void configure(SparkMaxConfig config, ResetMode knoresetsafeparameters,
-      PersistMode kpersistparameters) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'configure'");
-  }
+  // public void configure(SparkMaxConfig config, ResetMode
+  // knoresetsafeparameters,
+  // PersistMode kpersistparameters) {
+  // // TODO Auto-generated method stub
+  // throw new UnsupportedOperationException("Unimplemented method 'configure'");
+  // }
 }
