@@ -26,6 +26,10 @@ import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.commands.ledsCommands;
 import frc.robot.subsystems.leds.leds;
 import frc.robot.subsystems.leds.ledsIOReal;
+import frc.robot.POM_lib.sensors.POMDigitalInput;
+import frc.robot.subsystems.arm.arm;
+import frc.robot.subsystems.arm.armIOReal;
+import frc.robot.commands.armcommands;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -46,6 +50,8 @@ public class RobotContainer {
 
         // Controller
         private final PomXboxController driverController = new PomXboxController(0);
+        private arm arm;
+        private POMDigitalInput brakeSwitch = new POMDigitalInput(4);
 
         private leds leds;
 
@@ -62,6 +68,7 @@ public class RobotContainer {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
                                 leds = new leds(new ledsIOReal());
+                                arm = new arm(new armIOReal(brakeSwitch));
                                 break;
 
                         case SIM:
@@ -92,6 +99,7 @@ public class RobotContainer {
          * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
          */
         private void configureButtonBindings() {
+
         }
 
         // public void displaSimFieldToAdvantageScope() {
