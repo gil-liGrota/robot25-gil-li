@@ -105,6 +105,10 @@ public class RobotContainer {
          */
         private void configureButtonBindings() {
 
+                driverController.y().onTrue(elevatorCommands.goToPosition(elevator, 30));
+                driverController.x().onTrue(elevatorCommands.goToPosition(elevator, 20));
+                driverController.b().onTrue(elevatorCommands.goToPosition(elevator, 10));
+                driverController.a().onTrue(elevatorCommands.closeElevator(elevator));
         }
 
         // public void displaSimFieldToAdvantageScope() {
