@@ -119,7 +119,7 @@ public class RobotContainer {
         private void configureButtonBindings() {
                 leds.setDefaultCommand(ledsCommands.setAll(leds, Color.kPurple));
 
-                driverController.circle().onTrue(SwerveCommands.resetPosition(drive));
+                // driverController.circle().onTrue(SwerveCommands.resetPosition(drive));
                 drive.setDefaultCommand(SwerveCommands.joystickDrive(drive,
                                 () -> driverController.getLeftY() * 0.35,
                                 () -> driverController.getLeftX() * 0.35,

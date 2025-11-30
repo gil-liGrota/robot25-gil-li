@@ -166,15 +166,15 @@ public class SwerveCommands {
                                                         isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI))
                                                                         : drive.getRotation());
 
-                                        // speeds = new ChassisSpeeds(0, 0.2, 0);
+                                        speeds = new ChassisSpeeds(0, 0.2, 0);
                                         drive.runVelocity(speeds, true);
                                 },
                                 drive).beforeStarting(Commands.runOnce(drive::resetKinematics, drive));
         }
 
-        public static Command resetPosition(Swerve drive) {
-                return Commands.runOnce(() -> drive.resetPosition(), drive);
-        }
+        // public static Command resetPosition(Swerve drive) {
+        // return Commands.runOnce(() -> drive.resetPosition(), drive);
+        // }
 
         public static Command joystickDriveRobotRelative(
                         Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier,
