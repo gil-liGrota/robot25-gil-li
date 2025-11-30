@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -74,6 +75,7 @@ public class ModuleIOReal implements ModuleIO {
         turnMotor = new SparkMax(swerveBaseID + 1 + swerveModuleIDsCount * module,
                 MotorType.kBrushless);
         turnEncoder = new CANcoder(swerveBaseID + 2 + swerveModuleIDsCount * module);
+        resetPosition();
 
         var encoderConfig = new CANcoderConfiguration();
         encoderConfig.MagnetSensor.SensorDirection = module == 1 ? SensorDirectionValue.CounterClockwise_Positive
@@ -235,8 +237,26 @@ public class ModuleIOReal implements ModuleIO {
 
     @Override
     public void resetPosition() {
+        double abs = turnEncoder.getAbsolutePosition().getValueAsDouble();
+
+        double newOffset = abs;
+
+        // CANcoderConfiguration cfg = new CANcoderConfiguration();
+        // cfg.MagnetSensor.MagnetOffset = newOffset;
+        // cfg.MagnetSensor.SensorDirection = module == 0 ?
+        // SensorDirectionValue.CounterClockwise_Positive
+        // : SensorDirectionValue.Clockwise_Positive;
+        // turnEncoder.getConfigurator().apply(cfg);
+
         turnEncoder.setPosition(0);
         driveMotor.setPosition(0);
+        // zeroRotation = switch (module) {
+        // case 0 -> frontLeftZeroRotation;
+        // case 1 -> frontRightZeroRotation;
+        // case 2 -> backLeftZeroRotation;
+        // case 3 -> backRightZeroRotation;
+        // default -> new Rotation2d();
+        // };
     }
 
     private String getModuleString() {
