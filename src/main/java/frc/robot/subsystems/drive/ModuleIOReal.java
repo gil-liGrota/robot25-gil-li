@@ -235,29 +235,29 @@ public class ModuleIOReal implements ModuleIO {
         return turnEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
     }
 
-    @Override
-    public void resetPosition() {
-        double abs = turnEncoder.getAbsolutePosition().getValueAsDouble();
+    // @Override
+    // public void resetPosition() {
+    //     double abs = turnEncoder.getAbsolutePosition().getValueAsDouble();
 
-        double newOffset = abs;
+    //     double newOffset = abs;
 
-        // CANcoderConfiguration cfg = new CANcoderConfiguration();
-        // cfg.MagnetSensor.MagnetOffset = newOffset;
-        // cfg.MagnetSensor.SensorDirection = module == 0 ?
-        // SensorDirectionValue.CounterClockwise_Positive
-        // : SensorDirectionValue.Clockwise_Positive;
-        // turnEncoder.getConfigurator().apply(cfg);
+    //     // CANcoderConfiguration cfg = new CANcoderConfiguration();
+    //     // cfg.MagnetSensor.MagnetOffset = newOffset;
+    //     // cfg.MagnetSensor.SensorDirection = module == 0 ?
+    //     // SensorDirectionValue.CounterClockwise_Positive
+    //     // : SensorDirectionValue.Clockwise_Positive;
+    //     // turnEncoder.getConfigurator().apply(cfg);
 
-        turnEncoder.setPosition(0);
-        driveMotor.setPosition(0);
-        // zeroRotation = switch (module) {
-        // case 0 -> frontLeftZeroRotation;
-        // case 1 -> frontRightZeroRotation;
-        // case 2 -> backLeftZeroRotation;
-        // case 3 -> backRightZeroRotation;
-        // default -> new Rotation2d();
-        // };
-    }
+    //     turnEncoder.setPosition(0);
+    //     driveMotor.setPosition(0);
+    //     // zeroRotation = switch (module) {
+    //     // case 0 -> frontLeftZeroRotation;
+    //     // case 1 -> frontRightZeroRotation;
+    //     // case 2 -> backLeftZeroRotation;
+    //     // case 3 -> backRightZeroRotation;
+    //     // default -> new Rotation2d();
+    //     // };
+    // }
 
     private String getModuleString() {
         return "Module " + switch (module) {
