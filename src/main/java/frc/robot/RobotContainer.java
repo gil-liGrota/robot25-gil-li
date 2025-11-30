@@ -13,11 +13,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.commands.ledsCommands;
 import frc.robot.subsystems.leds.leds;
@@ -25,6 +27,10 @@ import frc.robot.subsystems.leds.ledsIOReal;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
 import frc.robot.subsystems.arm.arm;
 import frc.robot.subsystems.arm.armIOReal;
+import frc.robot.subsystems.drive.GyroIOPigeon;
+import frc.robot.subsystems.drive.ModuleIOReal;
+import frc.robot.subsystems.drive.Swerve;
+import frc.robot.commands.SwerveCommands;
 import frc.robot.commands.armcommands;
 import frc.robot.POM_lib.sensors.POMDigitalInput;
 import frc.robot.commands.elevatorCommands;
@@ -50,7 +56,7 @@ public class RobotContainer {
         // Subsystems
 
         // Controller
-        private final PomXboxController driverController = new PomXboxController(0);
+        private final CommandPS5Controller driverController = new CommandPS5Controller(0);
         private arm arm;
         private POMDigitalInput brakeSwitch = new POMDigitalInput(4);
 
@@ -63,6 +69,8 @@ public class RobotContainer {
 
         private SwerveDriveSimulation driveSimulation = null;
 
+        private Swerve drive;
+
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
@@ -74,6 +82,11 @@ public class RobotContainer {
                                 arm = new arm(new armIOReal(brakeSwitch));
                                 elevator = new elevator(new elevatorIOReal(brakeSwitch));
                                 transfer = new transfer(new transferIOreal());
+                                drive = new Swerve(new GyroIOPigeon(),
+                                                new ModuleIOReal(0),
+                                                new ModuleIOReal(1),
+                                                new ModuleIOReal(2),
+                                                new ModuleIOReal(3));
                                 break;
 
                         case SIM:
@@ -104,11 +117,16 @@ public class RobotContainer {
          * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
          */
         private void configureButtonBindings() {
+                leds.setDefaultCommand(ledsCommands.setAll(leds, Color.kPurple));
 
-                driverController.y().onTrue(elevatorCommands.goToPosition(elevator, 30));
-                driverController.x().onTrue(elevatorCommands.goToPosition(elevator, 20));
-                driverController.b().onTrue(elevatorCommands.goToPosition(elevator, 10));
-                driverController.a().onTrue(elevatorCommands.closeElevator(elevator));
+                driverController.circle().onTrue(SwerveCommands.resetPosition(drive));
+                drive.setDefaultCommand(SwerveCommands.joystickDrive(drive,
+                                () -> driverController.getLeftY() * 0.35,
+                                () -> driverController.getLeftX() * 0.35,
+                                () -> driverController.getRightX() * 0.35));
+
+                driverController.R2().whileTrue(SwerveCommands.joystickDrive(drive, () -> 0, () -> 0.35, () -> 0));
+
         }
 
         // public void displaSimFieldToAdvantageScope() {
