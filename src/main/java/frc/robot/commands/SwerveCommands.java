@@ -42,7 +42,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.Constants.VisionConstants;
-// import frc.robot.Constants.VisionConstants;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.subsystems.Vision.VisionSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
@@ -166,15 +165,10 @@ public class SwerveCommands {
                                                         isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI))
                                                                         : drive.getRotation());
 
-                                        // speeds = new ChassisSpeeds(0, 0.2, 0);
                                         drive.runVelocity(speeds, true);
                                 },
                                 drive).beforeStarting(Commands.runOnce(drive::resetKinematics, drive));
         }
-
-        // public static Command resetPosition(Swerve drive) {
-        // return Commands.runOnce(() -> drive.resetPosition(), drive);
-        // }
 
         public static Command joystickDriveRobotRelative(
                         Swerve drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier,

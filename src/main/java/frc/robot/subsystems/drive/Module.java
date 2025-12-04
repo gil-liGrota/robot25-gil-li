@@ -49,10 +49,6 @@ public class Module {
         turnDisconnectedAlert.set(!inputs.turnConnected);
     }
 
-    // public void resetposition() {
-    //     io.resetPosition();
-    // }
-
     /**
      * Runs the module with the specified setpoint state. Mutates the state to
      * optimize it.

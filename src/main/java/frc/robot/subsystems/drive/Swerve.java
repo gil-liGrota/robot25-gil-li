@@ -224,12 +224,6 @@ public class Swerve extends SubsystemBase { // ODED WAS HERE
         runVelocity(speeds, false);
     }
 
-    // public void resetPosition() {
-    //     for (var module : modules) {
-    //         module.resetposition();
-    //     }
-    // }
-
     public void runVelocity(ChassisSpeeds speeds, boolean isOpenLoop) {
         // Calculate module setpoints
         speeds = ChassisSpeeds.discretize(speeds, 0.02);
