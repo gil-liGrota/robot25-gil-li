@@ -15,6 +15,7 @@ package frc.robot;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.Color;
@@ -56,6 +57,7 @@ public class RobotContainer {
         // Subsystems
 
         // Controller
+        public final Joystick joystick = new Joystick(2);
         private final CommandPS5Controller driverController = new CommandPS5Controller(0);
         private arm arm;
         private POMDigitalInput brakeSwitch = new POMDigitalInput(4);
@@ -123,6 +125,9 @@ public class RobotContainer {
                                 () -> driverController.getLeftY() * 0.35,
                                 () -> driverController.getLeftX() * 0.35,
                                 () -> driverController.getRightX() * 0.35));
+
+                driverController.circle().onTrue(drive.resetGyroCommand());
+                driverController.L2().whileTrue(SwerveCommands.joystickDrive(drive, () -> 0.2, () -> 0, () -> 0));
 
         }
 

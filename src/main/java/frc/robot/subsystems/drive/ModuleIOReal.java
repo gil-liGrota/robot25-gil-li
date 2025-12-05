@@ -76,15 +76,17 @@ public class ModuleIOReal implements ModuleIO {
         turnEncoder = new CANcoder(swerveBaseID + 2 + swerveModuleIDsCount * module);
 
         var encoderConfig = new CANcoderConfiguration();
-        encoderConfig.MagnetSensor.SensorDirection = module == 1 ? SensorDirectionValue.CounterClockwise_Positive
-                : SensorDirectionValue.Clockwise_Positive;
+        // encoderConfig.MagnetSensor.SensorDirection = module == 1 ?
+        // SensorDirectionValue.CounterClockwise_Positive
+        // : SensorDirectionValue.Clockwise_Positive;
 
         encoderConfig.MagnetSensor.SensorDirection = switch (module) {
-            case 0 -> SensorDirectionValue.CounterClockwise_Positive;
+            case 0 -> SensorDirectionValue.Clockwise_Positive;
             case 1 -> SensorDirectionValue.CounterClockwise_Positive;
-            case 2 -> SensorDirectionValue.CounterClockwise_Positive;
-            case 3 -> SensorDirectionValue.CounterClockwise_Positive;
-            default -> SensorDirectionValue.CounterClockwise_Positive();
+            case 2 -> SensorDirectionValue.Clockwise_Positive;
+            case 3 -> SensorDirectionValue.Clockwise_Positive;
+            default -> SensorDirectionValue.Clockwise_Positive;
+
         };
 
         encoderConfig.MagnetSensor.MagnetOffset = zeroRotation.getRotations();
@@ -102,7 +104,14 @@ public class ModuleIOReal implements ModuleIO {
         driveConfig.TorqueCurrent.PeakReverseTorqueCurrent = -driveSlipCurrent;
         driveConfig.CurrentLimits.StatorCurrentLimit = driveSlipCurrent;
         driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        driveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        driveConfig.MotorOutput.Inverted = switch (module) {
+            case 0 -> InvertedValue.CounterClockwise_Positive;
+            case 1 -> InvertedValue.CounterClockwise_Positive;
+            case 2 -> InvertedValue.Clockwise_Positive;
+            case 3 -> InvertedValue.Clockwise_Positive;
+            default -> InvertedValue.CounterClockwise_Positive;
+        };
+        // driveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         driveConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = driveRampRate;
         driveConfig.OpenLoopRamps.VoltageOpenLoopRampPeriod = driveRampRate;
         driveConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = driveRampRate;
